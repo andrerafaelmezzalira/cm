@@ -1,0 +1,8 @@
+/target/
+/.metadata/
+/.settings/
+RemoteSystemsTempFiles/
+/.tern-project
+/.classpath
+/.project
+/bin/

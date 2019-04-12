@@ -1,0 +1,159 @@
+<div class="section">
+	<h5>Resource URL</h5>
+	<p>
+		Para fazer a integração com a API, o Integrador deve fazer uma
+		requisição <b>POST</b> para <b>http://rpi.projetabrasil.net.br/api/enel/debito</b>
+	</p>
+</div>
+<div class="divider"></div>
+<div class="section">
+	<h5>JSON Request</h5>
+	<p>Segue exemplo da requisição do json de entrada, que faz o envio
+		de 3 parâmetros para o processamento:</p>
+
+	<pre style="font-size: 11px;">
+{
+  "cpfCnpj": "xxxxxxxxxxxxxx",
+  "parametros": [
+    {
+      "codigoImovel": "codigoImovel",
+      "numeroContrato": "numeroContrato",
+      "unidadeConsumidora": "13028285",
+      "cpfCnpj": "04418640150"
+    },
+    {
+      "codigoImovel": "codigoImovel",
+      "numeroContrato": "numeroContrato",
+      "unidadeConsumidora": "11142777",
+      "cpfCnpj": "02248294166"
+    },
+    {
+      "codigoImovel": "codigoImovel",
+      "numeroContrato": "numeroContrato",
+      "unidadeConsumidora": "12052309",
+      "cpfCnpj": "04418640150"
+    }
+  ]
+}
+
+</pre>
+
+	<div style="display: block;">
+		<b>Descrição dos campos:</b>
+	</div>
+	<br />
+	<div style="display: block;">
+		<b>cpfCnpj:</b>&nbsp;Referencia o usuário que faz a requisição, deve ser inserido no header.
+	</div>
+	<div style="display: block;">
+		<b>parametros:</b>&nbsp;Representa os parâmetros a serem processados.
+		Para cada parâmetro, informar:
+	</div>
+	<div style="display: block;">
+		<b>codigoImovel:</b>&nbsp;O código do imóvel.
+	</div>
+	<div style="display: block;">
+		<b>numeroContrato:</b>&nbsp;O número do contrato.
+	</div>
+	<div style="display: block;">
+		<b>unidadeConsumidora:</b>&nbsp;O número da unidade consumidora.
+	</div>
+	<div style="display: block;">
+		<b>cpfCnpj:</b>&nbsp;O CPF/CNPJ da consulta em questão.
+	</div>
+
+</div>
+<div class="divider"></div>
+<div class="section"></div>
+	<h5>JSON Response</h5>
+	<p>Segue exemplo da resposta ao cliente, em alusão a requisição de
+		entrada feita acima:</p>
+
+
+	<pre style="font-size: 11px;">
+{
+  "cpfCnpj": "xxxxxxxxxxxxxx",
+  "site": "ENEL",
+  "servico": "DEBITO",
+  "parametros": [
+    {
+      "codigoImovel": "codigoImovel",
+      "numeroContrato": "numeroContrato",
+      "resultado": {
+        "status": "Possui Débito",
+        "faturaAtrasada": "Sim",
+        "totalFatura": "2",
+        "totalFaturaAtrasada": "2",
+        "valorDebito": "212.23"
+      },
+      "estado": {
+        "id": 1,
+        "mensagem": "Processado"
+      },
+      "unidadeConsumidora": "13028285",
+      "cpfCnpj": "04418640150"
+    },
+    {
+      "codigoImovel": "codigoImovel",
+      "numeroContrato": "numeroContrato",
+      "resultado": {
+        "status": "Não Possui Débito",
+        "faturaAtrasada": "Não"
+      },
+      "estado": {
+        "id": 1,
+        "mensagem": "Processado"
+      },
+      "unidadeConsumidora": "11142777",
+      "cpfCnpj": "02248294166"
+    },
+    {
+      "codigoImovel": "codigoImovel",
+      "numeroContrato": "numeroContrato",
+      "resultado": {
+        "status": "Não Identificado"
+      },
+      "estado": {
+        "id": 1,
+        "mensagem": "Processado"
+      },
+      "unidadeConsumidora": "12052309",
+      "cpfCnpj": "04418640150"
+    }
+  ]
+}
+ 
+</pre>
+
+	<div style="display: block;">
+		<b>Descrição dos campos:</b>
+	</div>
+	<br />
+	<div style="display: block;">
+		<b>Os campos retornados na resposta, são os mesmos da entrada,
+			exceto:</b>
+	</div>
+	<br />
+	<div style="display: block;">
+		<b>resultado:</b>&nbsp;O resultado esperado. Em resultado encontramos:
+	<div style="display: block;">
+		<b>status:</b>&nbsp;Os seguintes status estão disponíveis: "Possui débito", 
+		"Não possui débito" e "Não identificado".
+	</div>
+	<div style="display: block;">
+		<b>faturaAtrasada:</b>&nbsp;Se houver fatura atrasada, o resultado será "Sim", se não houver, o resultado será "Não".
+	</div>
+	<div style="display: block;">
+		<b>totalFatura:</b>&nbsp;Número total de faturas.
+	</div>
+	<div style="display: block;">
+		<b>totalFaturaAtrasada:</b>&nbsp;Número de faturas em atraso.
+	</div>
+	<div style="display: block;">
+		<b>valorDebito:</b>&nbsp;Soma de todas as faturas em aberto.
+	</div>
+	<div style="display: block;">
+		<b>estado:</b>&nbsp;Informa se o parâmetro foi processado com êxito. Deverá
+		retornar código 1 - Processado e 2 - Reprocessar.
+	</div>
+</div>

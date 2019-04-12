@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html data-ng-app="app">
+
+<head>
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta charset="UTF-8">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+	rel="stylesheet">
+<link rel="stylesheet"
+	href="https://use.fontawesome.com/releases/v5.2.0/css/all.css"
+	data-integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ"
+	data-crossorigin="anonymous">
+<link rel="stylesheet"
+	href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+<link rel="stylesheet"
+	href="https://www.cssscript.com/demo/json-data-tree-view/jsonview.css">
+<link rel="stylesheet"
+	href="https://cdnjs.cloudflare.com/ajax/libs/angular-loading-bar/0.9.0/loading-bar.min.css">
+
+<style type="text/css">
+.chip {
+	display: inline-block;
+	height: 32px;
+	height: auto;
+	font-size: 13px;
+	font-weight: 500;
+	color: rgba(0, 0, 0, 0.6);
+}
+</style>
+</head>
+
+<body>
+
+	<div data-ng-controller="UsuarioController as vm" class="container">
+
+		<div data-ng-form="usuarioForm" class="row"
+			data-ng-if="!vm.manter.usuario.sites">
+			<h6 class="center-align" style="margin-top: 50px;">Olá Sr.
+				Cliente, para começar, informe seu CPF ou CNPJ cadastrado</h6>
+			<div class="row z-depth-5 "
+				style="padding: 15px; border-radius: 15px; margin-top: 50px;">
+				<div class="col s12 input-field">
+					<input autofocus="autofocus" required="required"
+						placeholder="CPF/CNPJ" data-ng-model="vm.manter.usuario.cpfCnpj"
+						id="cpfCnpj" type="text" name="cpfCnpj" maxlength="14"
+						data-ng-class="{'invalid': usuarioForm.cpfCnpj.$error.cpfCnpj}">
+					<label for="cpfCnpj">CPF/CNPJ</label> <span
+						data-ng-if="usuarioForm.cpfCnpj.$error.cpfCnpj"
+						style="color: red;">{{usuarioForm.cpfCnpj.errorMessage}}</span>
+				</div>
+				<div class="col s12 offset-s5">
+					<br /> <a data-ng-click="vm.validar(usuarioForm)"
+						data-ng-disabled="!vm.manter.usuario.cpfCnpj"
+						class="waves-effect waves-light btn">Avançar</a>
+					<div class="loading" style="padding: 15px; margin: 15px;"></div>
+				</div>
+			</div>
+		</div>
+
+		<div class="row"
+			data-ng-if="vm.manter.usuario.sites && !vm.manter.header">
+			<h6 class="center-align" style="margin-top: 50px;">
+				Muito bem <b>{{vm.manter.usuario.nome}}</b>. Agora escolha um dos
+				serviços disponíveis abaixo
+			</h6>
+			<div class="row z-depth-5 "
+				style="padding: 15px; border-radius: 15px; margin-top: 50px;">
+				<div class="col s12">
+					<table class="responsive-table centered striped">
+						<tbody>
+							<tr
+								data-ng-repeat="site in vm.manter.usuario.sites | orderBy:vm.orderByPosicao track by $index">
+								<td style="word-break: break-all;">{{ vm.getSite(site.nome,
+									'nome').descricao }}</td>
+								<td style="word-break: break-all;"><a target="_blank"
+									href="{{ vm.getSite(site.nome, 'nome').link }}"> {{
+										vm.getSite(site.servico, 'servico').descricaoServico }}</a></td>
+								<td><i
+									data-ng-click="vm.manter.file = ''; vm.manter.header = { cpfCnpj : vm.manter.usuario.cpfCnpj, site : site.nome,  servico : site.servico, parametros : []}"
+									style="cursor: pointer;" title="Consultar/Processar"
+									class="material-icons">search</i></td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+
+		<div data-ng-form="headerForm" class="row"
+			data-ng-if="vm.manter.header">
+			<h6 class="center-align" style="margin-top: 50px;">
+				Você escolheu o site <b>{{vm.getSite(vm.manter.header.site,
+					'nome').descricao}}</b> e o serviço <b>{{vm.getSite(vm.manter.header.servico,
+					'servico').descricaoServico}}</b>.
+			</h6>
+			<div class="row z-depth-5 "
+				style="padding: 15px; border-radius: 15px; margin-top: 50px;">
+
+				<div class="row">
+
+					<div class="col s12 input-field"
+						data-ng-repeat="parametro in vm.getSite(vm.manter.header.site, 'nome').header track by $index"
+						data-ng-if="vm.getSite(vm.manter.header.site, 'nome').header">
+
+						<input placeholder="{{parametro.label}}"
+							data-ng-model="vm.manter.header[parametro.field]" type="text"
+							id="{{parametro.field}}" maxlength="30"> <label
+							for="{{parametro.field}}">{{parametro.label}}</label>
+
+					</div>
+				</div>
+				<ul class="collapsible">
+					<li>
+						<div class="collapsible-header">
+							<i class="material-icons">help</i>Documentação
+						</div>
+						<div class="collapsible-body">
+							<div
+								data-ng-include="vm.getDocumentacao(vm.manter.header.site, vm.manter.header.servico).documentacao"></div>
+						</div>
+					</li>
+					<li>
+						<div class="collapsible-header">
+							<i class="material-icons">place</i>Parâmetros - Manual
+						</div>
+						<div class="collapsible-body">
+							<div class="row">
+
+								<div class="col s12 m6 l4">
+									<label>Selecione um campo</label> <select
+										class="browser-default"
+										data-ng-model="vm.manter.opcionalNomeParametro"
+										data-ng-options="campo as campo.label for campo in vm.getSite(vm.manter.header.site, 'nome').campos">
+										<option value="" selected="selected"></option>
+									</select>
+								</div>
+
+								<div class="col s12 m6 l4 input-field">
+									<input placeholder="{{vm.manter.opcionalNomeParametro.label}}"
+										data-ng-class="{'invalid': headerForm.file.$error.file}"
+										data-ng-model="vm.manter.opcionalValorParametro" type="text"
+										id="opcionalValorParametro" maxlength="30"> <label
+										for="opcionalValorParametro">{{vm.manter.opcionalNomeParametro.label}}</label>
+									<span data-ng-if="headerForm.file.$error.file"
+										style="color: red;">{{headerForm.file.errorMessage}}</span>
+								</div>
+
+								<div class="col s12 m6 l4">
+									<a style="margin-top: 20px;"
+										data-ng-disabled="!(vm.manter.opcionalNomeParametro && vm.manter.opcionalValorParametro)"
+										data-ng-click="vm.addParametro();"
+										class="waves-effect waves-light btn">Adicionar</a> <a
+										style="margin-top: 20px;"
+										data-ng-disabled="!vm.manter.parametro"
+										data-ng-click="vm.manter.parametro = undefined; vm.manter.opcionalNomeParametro = undefined; vm.manter.opcionalValorParametro = undefined;"
+										class="waves-effect waves-light btn">Nova Linha</a>
+								</div>
+
+								<div class="col s12">
+									<br />
+									<div style="display: inline;">
+										<div style="word-break: break-all;"
+											data-ng-repeat="parametro in vm.manter.header.parametros track by $index"
+											class="chip">
+											{{parametro | json}}<i
+												data-ng-click="vm.removerParametro($index);"
+												class="close material-icons">close</i>
+										</div>
+									</div>
+								</div>
+								<div class="col s12 center">
+									<a data-ng-click="vm.processar(headerForm)"
+										data-ng-disabled="vm.manter.header.parametros.length === 0"
+										class="waves-effect waves-light btn">Processar</a> <br />
+								</div>
+
+							</div>
+						</div>
+					</li>
+					<li>
+						<div class="collapsible-header">
+							<i class="material-icons">attach_file</i>Importar Excel
+						</div>
+						<div class="collapsible-body">
+							<div class="row">
+
+								<div class="col s12 file-field input-field">
+									<div style="display: table-column;" class="btn">
+										<span>Importar Excel</span> <input type="file"
+											required="required" data-file="vm.manter.header.parametros" />
+									</div>
+									<div class="file-path-wrapper hide-on-small-only">
+										<input class="file-path"
+											data-ng-class="{'invalid': headerForm.file.$error.file}"
+											placeholder="Selecione um arquivo excel" type="text"
+											data-ng-model="vm.manter.file" id="file" name="file">
+										<span data-ng-if="headerForm.file.$error.file"
+											style="color: red;">{{headerForm.file.errorMessage}}</span>
+									</div>
+								</div>
+
+								<div class="col s12 center">
+									<a data-ng-click="vm.processar(headerForm)"
+										data-ng-disabled="vm.manter.header.parametros.length === 0"
+										class="waves-effect waves-light btn">Processar</a> <br />
+								</div>
+
+							</div>
+						</div>
+					</li>
+					<li>
+						<div class="collapsible-header">
+							<i class="material-icons">search</i>Consultar
+						</div>
+						<div class="collapsible-body">
+							<div class="row">
+
+								<div class="col s12 m6 l4 input-field">
+									<input type="text" data-ng-model="vm.manter.datepicker"
+										class="datepicker" id="datepicker" name="datepicker"
+										placeholder="Informa Dia/Mês/Ano"> <label
+										for="datepicker">Dia/Mês/Ano</label>
+								</div>
+								<div class="col s12 m6 l4 input-field">
+									<input type="text" data-ng-model="vm.manter.timepicker"
+										placeholder="Informa Hora/Minuto" class="timepicker"
+										id="timepicker" name="timepicker"> <label
+										for="timepicker">Hora/Minuto</label>
+								</div>
+
+								<div class="col s12 m4 l4 center">
+									<a data-ng-click="vm.consultar(headerForm)"
+										style="margin-top: 20px;"
+										data-ng-disabled="!vm.manter.datepicker"
+										class="waves-effect waves-light btn">Consultar</a>
+								</div>
+							</div>
+						</div>
+					</li>
+				</ul>
+				<br />
+				<div class="col s12 center">
+					<a data-ng-click="vm.manter.header = undefined;"
+						class="waves-effect waves-light btn">Voltar</a>
+				</div>
+				<br />
+				<div class="loading center" style="padding: 15px; margin: 15px;"></div>
+				<div class="col s12">
+					<div class="root"></div>
+					<div class="rootConsulta"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<footer data-ng-controller="FooterController as vm" class="page-footer"
+		style="background-color: white;">
+		<div class="footer-copyright">
+			<div class="container">
+				<span class="grey-text">{{vm.manter.versao}}</span> <a
+					class="grey-text right" href="#">Projeta Brasil</a>
+			</div>
+		</div>
+	</footer>
+
+
+	<script type="text/javascript"
+		src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<script type="text/javascript"
+		src="https://cdnjs.cloudflare.com/ajax/libs/xls/0.7.4-a/xls.js"></script>
+	<script type="text/javascript"
+		src="https://unpkg.com/xlsx@0.14.1/dist/xlsx.full.min.js"></script>
+	<script type="text/javascript"
+		src="https://www.cssscript.com/demo/json-data-tree-view/jsonview.js"></script>
+	<script
+		src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+	<script
+		src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.7.5/angular.min.js"></script>
+	<script
+		src="https://cdnjs.cloudflare.com/ajax/libs/angular-loading-bar/0.9.0/loading-bar.min.js"></script>
+
+	<script src="app/app.js"></script>
+	<script src="app/app.config.js"></script>
+
+	<script src="app/constant/site.constant.js"></script>
+	<script src="app/constant/versao.constant.js"></script>
+
+	<script src="app/directive/datepicker.directive.js"></script>
+	<script src="app/directive/timepicker.directive.js"></script>
+	<script src="app/directive/collapsible.directive.js"></script>
+	<script src="app/directive/file.directive.js"></script>
+
+	<script src="app/service/session.service.js"></script>
+	<script src="app/service/usuario.service.js"></script>
+	<script src="app/service/header.service.js"></script>
+
+	<script src="app/controller/footer.controller.js"></script>
+	<script src="app/controller/usuario.controller.js"></script>
+</body>
+
+</html>
+
