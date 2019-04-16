@@ -9,7 +9,6 @@ import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
 
 /**
- * Convert LocalDateTime para String
  * 
  * @author andrerafaelmezzalira
  *

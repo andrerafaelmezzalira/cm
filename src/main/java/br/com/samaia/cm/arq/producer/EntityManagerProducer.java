@@ -8,8 +8,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 /**
- * Classe que realiza a injecao do entityManager
- * 
  * @author andrerafaelmezzalira
  *
  */

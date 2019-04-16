@@ -11,12 +11,14 @@ import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
- * Representa uma property dos arquivos properties que será injetada
+ * @andrerafaelmezzalira
  */
+
 @Qualifier
 @Retention(RUNTIME)
 @Target({ TYPE, METHOD, FIELD, PARAMETER })
 public @interface Property {
+	
 	@Nonbinding
 	String value() default "";
 

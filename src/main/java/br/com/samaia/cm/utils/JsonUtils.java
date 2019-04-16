@@ -11,7 +11,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import br.com.samaia.cm.domain.entity.Parametro;
+import br.com.samaia.cm.domain.entity.Parameter;
 
 /**
  * Classe para métodos utilitários para manipular json
@@ -29,7 +29,7 @@ public class JsonUtils {
 		return getObjectMapper().writer().withDefaultPrettyPrinter().writeValueAsString(t);
 	}
 
-	public static final <T extends Parametro> List<T> convertList(Collection<?> parametros,
+	public static final <T extends Parameter> List<T> convertList(Collection<?> parametros,
 			TypeReference<List<T>> typeReference) {
 		return getObjectMapper().convertValue(parametros, typeReference);
 	}

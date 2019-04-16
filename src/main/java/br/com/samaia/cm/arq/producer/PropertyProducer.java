@@ -14,8 +14,6 @@ import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.spi.InjectionPoint;
 
 /**
- * Classe que realiza a injecao do arquivo properties
- * 
  * @author andrerafaelmezzalira
  *
  */
@@ -74,13 +72,13 @@ public class PropertyProducer {
 						: ip.getMember().getName();
 	}
 
-	private void populate(final String fileProperties) {
-		log.info("loading arquivo properties " + fileProperties);
+	private void populate(final String file) {
+		log.info("loading properties " + file);
 		try {
-			properties.load(PropertyProducer.class.getResourceAsStream(fileProperties));
+			properties.load(PropertyProducer.class.getResourceAsStream(file));
 		} catch (IOException e) {
 			e.printStackTrace();
-			log.severe("properties nao carregado ");
+			log.severe("problems properties ");
 		}
 	}
 }

@@ -14,12 +14,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import br.com.samaia.cm.utils.JsonUtils;
 
 /**
- * Classe que encapsula o entityManager para acesso a dados e fornece métodos
- * para as operações insert, update, delete, findById e findAll
  * 
  * @author andrerafaelmezzalira
  *
- * @param <T> - entidade do banco de dados
  */
 public class AbstractRepository<T extends AbstractEntity<?>> {
 
@@ -35,42 +32,42 @@ public class AbstractRepository<T extends AbstractEntity<?>> {
 	}
 
 	public T insert(final T entity) throws JsonProcessingException {
-		log.info("insert em " + entity.getClass().getName());
+		log.info("insert " + entity.getClass().getName());
 		entityManager.persist(entity);
 		entityManager.flush();
-		log.info("resultado insert \n" + JsonUtils.toJson(entity));
+		log.info("result insert \n" + JsonUtils.toJson(entity));
 		return entity;
 	}
 
 	public T update(final T entity) throws JsonProcessingException {
-		log.info("update em " + entity.getClass().getName() + "\n " + JsonUtils.toJson(entity));
+		log.info("update " + entity.getClass().getName() + "\n " + JsonUtils.toJson(entity));
 		entityManager.merge(entity);
 		entityManager.flush();
-		log.info("resultado update \n" + JsonUtils.toJson(entity));
+		log.info("result update \n" + JsonUtils.toJson(entity));
 		return entity;
 	}
 
 	public T delete(final T entity) throws JsonProcessingException {
-		log.info("delete em " + entity.getClass().getName() + " \n " + JsonUtils.toJson(entity));
+		log.info("delete " + entity.getClass().getName() + " \n " + JsonUtils.toJson(entity));
 		entityManager.remove(entityManager.contains(entity) ? entity : entityManager.merge(entity));
 		entityManager.flush();
-		log.info("resultado delete \n" + JsonUtils.toJson(entity));
+		log.info("result delete \n" + JsonUtils.toJson(entity));
 		return entity;
 	}
 
 	public T findById(final Serializable id) {
-		log.info("findById em " + entityClass.getName() + " id " + id);
+		log.info("findById " + entityClass.getName() + " id " + id);
 		final T t = entityManager.find(entityClass, id);
-		log.info("resultado findById \n" + t.toString());
+		log.info("result findById \n" + t.toString());
 		return t;
 	}
 
 	public List<T> listAll() {
-		log.info("listAll em " + entityClass.getName());
+		log.info("listAll " + entityClass.getName());
 		final CriteriaQuery<T> q = entityManager.getCriteriaBuilder().createQuery(entityClass);
 		final TypedQuery<T> tq = entityManager.createQuery(q.select(q.from(entityClass)));
 		final List<T> list = tq.getResultList();
-		log.info("resultado listAll \n");
+		log.info("result listAll \n");
 		int i = 0;
 		for (final T t : list) {
 			++i;

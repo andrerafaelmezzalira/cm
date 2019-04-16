@@ -1,13 +1,5 @@
---sites/servicos
+INSERT INTO public.service (id, name) VALUES (1, 'ADD_UNITY');
 
-INSERT INTO public.site (id, nome, servico) VALUES (1, 'ENEL', 'TITULARIDADE');
-INSERT INTO public.site (id, nome, servico) VALUES (2, 'ENEL', 'DEBITO');
+INSERT INTO public.person (id, cpf, name) VALUES (1, '00000000000', 'Default');
 
--- usuarios e vinculacoes de sites/servicos com usuarios
-
--- usuario default
-INSERT INTO public.usuario (id, cpfcnpj, nome) VALUES (1, '66666666666669', 'Samaia');
-
-INSERT INTO public.usuario_site (usuario_id, sites_id) VALUES (1, 1);
-INSERT INTO public.usuario_site (usuario_id, sites_id) VALUES (1, 2);
 

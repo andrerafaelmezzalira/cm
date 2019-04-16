@@ -4,7 +4,6 @@ import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
 
 /**
- * Mapeia o url path para as requisicoes da api
  * 
  * @author andrerafaelmezzalira
  *
