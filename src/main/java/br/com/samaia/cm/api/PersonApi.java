@@ -1,10 +1,11 @@
-package br.com.samaia.cm.api.repository.person;
+package br.com.samaia.cm.api;
 
 import java.io.IOException;
 import java.util.logging.Logger;
 
 import javax.inject.Inject;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
@@ -17,21 +18,28 @@ import br.com.samaia.cm.service.domain.PersonService;
 import br.com.samaia.cm.utils.JsonUtils;
 
 /**
- * API que valida um usuario
  * 
  * @author andrerafaelmezzalira
  *
  */
-@Path("/validarUsuario")
-public class FindPersonApi {
+@Path("/person")
+public class PersonApi {
 
 	private Logger log = Logger.getLogger(this.getClass().getName());
 
 	@Inject
 	private PersonService service;
 
+	@POST
+	public Response add(Person person) throws JsonProcessingException {
+		log.info(" add person \n " + JsonUtils.toJson(person));
+		service.save(person);
+		return Response.ok().entity(person).build();
+
+	}
+
 	@GET
-	public Response validarUsuario(@QueryParam("usuario") String json) throws JsonProcessingException {
+	public Response load(@QueryParam("usuario") String json) throws JsonProcessingException {
 
 		try {
 			Person usuario = JsonUtils.fromJson(json, Person.class);

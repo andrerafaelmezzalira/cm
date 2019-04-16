@@ -4,18 +4,16 @@ import br.com.samaia.cm.client.AbstractClient;
 import br.com.samaia.cm.domain.entity.Person;
 
 /**
- * Client que cria um usuario
- * 
  * @author andrerafaelmezzalira
  *
  */
 public class AddPersonClient extends AbstractClient<Person> {
 
-	private static final String URL_SAVE_USUARIO = "http://localhost:8080/cm/api/saveUsuario";
+	private static final String URL = "http://localhost:8080/cm/api/person";
 
 	public static void main(String[] args) {
 		AddPersonClient client = new AddPersonClient();
-		client.log(client.post(URL_SAVE_USUARIO, client.getDataSource()));
+		client.log(client.post(URL, client.getDataSource()));
 	}
 
 	@Override

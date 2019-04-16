@@ -1,4 +1,4 @@
-package br.com.samaia.cm.api.repository.service;
+package br.com.samaia.cm.api;
 
 import java.util.logging.Logger;
 
@@ -14,13 +14,12 @@ import br.com.samaia.cm.service.domain.ServiceService;
 import br.com.samaia.cm.utils.JsonUtils;
 
 /**
- * API que salva um site
  * 
  * @author andrerafaelmezzalira
  *
  */
-@Path("/saveSite")
-public class AddServiceApi {
+@Path("/service")
+public class ServiceApi {
 
 	private Logger log = Logger.getLogger(this.getClass().getName());
 

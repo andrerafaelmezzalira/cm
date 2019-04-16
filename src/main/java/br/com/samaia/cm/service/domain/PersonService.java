@@ -46,7 +46,7 @@ public class PersonService {
 			person.setServices(persons.get(0).getServices());
 			person.setName(persons.get(0).getName());
 		} else {
-			log.info("invalid person ");
+			log.severe("invalid person ");
 			throw new InvalidPersonException(USUARIO_INVALIDO);
 		}
 	}

@@ -10,9 +10,9 @@ import br.com.samaia.cm.domain.entity.Person;
 public class PersonDataSource {
 
 	public static final Person getObjectDataSource() {
-		Person usuario = new Person();
-		usuario.setCpf("66666666666669");
-
-		return usuario;
+		Person person = new Person();
+		person.setCpf("00000000000");
+		person.setName("Default");
+		return person;
 	}
 }
