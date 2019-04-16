@@ -14,7 +14,6 @@ import br.com.samaia.cm.arq.producer.Property;
 import br.com.samaia.cm.domain.entity.Header;
 import br.com.samaia.cm.domain.entity.Parameter;
 import br.com.samaia.cm.domain.entity.Person;
-import br.com.samaia.cm.domain.entity.Service;
 import br.com.samaia.cm.exception.InvalidPersonException;
 import br.com.samaia.cm.exception.RequiredFieldException;
 import br.com.samaia.cm.exception.RobotException;
@@ -78,32 +77,31 @@ public class RobotApiService {
 			for (final Field field : getClass().getDeclaredFields()) {
 				if (RobotService.class.isAssignableFrom(field.getType())) {
 					field.setAccessible(true);
-					final Object service = field.get(this);
-					final String servico = (String) service.getClass().getMethod("getService").invoke(service);
-					if (headerVO.getService().equals(servico)) {
-						log.info("execute class " + service.getClass().getName());
+					final Object serviceObject = field.get(this);
+					final String service = (String) serviceObject.getClass().getMethod("getService")
+							.invoke(serviceObject);
+					if (headerVO.getService().equals(service)) {
+						log.info("execute class " + serviceObject.getClass().getName());
 						final Header header = new Header();
-						log.info(" seta dataHoraInicio: " + LocalDateTime.now());
 						header.setDateTimeInit(LocalDateTime.now());
 						validateUser(header, headerVO);
-						service.getClass().getMethod("validations", new Class[] { Header.class, HeaderVO.class })
-								.invoke(service, header, headerVO);
+						serviceObject.getClass().getMethod("validations", new Class[] { Header.class, HeaderVO.class })
+								.invoke(serviceObject, header, headerVO);
 						final WebDriver webDriver = Utils.getWebDriver(headless);
 						headerService.saveHeader(header);
-						service.getClass().getMethod("call", new Class[] { WebDriver.class, Header.class })
-								.invoke(service, webDriver, header);
+						serviceObject.getClass().getMethod("call", new Class[] { WebDriver.class, Header.class })
+								.invoke(serviceObject, webDriver, header);
 						try {
 							log.info(" destroy webdriver ");
 							webDriver.quit();
 						} catch (Exception e) {
 							log.info(" destroy webdriver problem ");
 						}
-						log.info(" seta dataHoraFim: " + LocalDateTime.now());
 						header.setDateTimeEnd(LocalDateTime.now());
 						headerService.saveHeader(header);
 						headerVO.setParameters(Utils.getParameters(header));
-						log.info("parametros salvo: " + headerVO.getParameters().size());
-						log.info("salvo com sucesso.");
+						log.info("parameters size: " + headerVO.getParameters().size());
+						log.info("sucessufuly");
 						okExecute = true;
 						break;
 					}
@@ -113,7 +111,7 @@ public class RobotApiService {
 				log.severe("ocorreu algum problema na criaçao da classe executadora ");
 				throw new RobotException(PROBLEMA_DESENVOLVIMENTO);
 			}
-			log.info("concluiu método call headervo");
+			log.info("done call vo ");
 		} catch (Exception e) {
 			e.printStackTrace();
 			if (e instanceof RequiredFieldException) {
@@ -125,7 +123,7 @@ public class RobotApiService {
 			} else if (e instanceof RobotException) {
 				throw new RobotException(e.getMessage());
 			}
-			log.severe("|||||||||||| problema RoboApiService call ||||||||||||||||||||||||");
+			log.severe("|||||||||||| problem RoboApiService call ||||||||||||||||||||||||");
 			log.severe(e.getClass().getName());
 			if (e.getCause() != null) {
 				log.severe(e.getCause().getClass().getName());
@@ -139,46 +137,45 @@ public class RobotApiService {
 			for (final Field field : getClass().getDeclaredFields()) {
 				if (RobotService.class.isAssignableFrom(field.getType())) {
 					field.setAccessible(true);
-					final Object service = field.get(this);
-					final String servico = (String) service.getClass().getMethod("getService").invoke(service);
-					if (header.getService().getName().equals(servico)) {
+					final Object serviceObject = field.get(this);
+					final String service = (String) serviceObject.getClass().getMethod("getService")
+							.invoke(serviceObject);
+					if (header.getService().getName().equals(service)) {
 						final WebDriver webDriver = Utils.getWebDriver(headless);
-						log.info("encontrou classe executadora " + service.getClass().getName());
-						log.info(" seta dataHoraInicioReprocessamento: " + LocalDateTime.now());
-						for (Parameter parametro : Utils.getParameters(header)) {
-							parametro.setDateTimeInitReprocessing(LocalDateTime.now());
-							parametro.setState(null);
-							parametro.setResult(null);
+						log.info("execute class " + serviceObject.getClass().getName());
+						for (Parameter parameter : Utils.getParameters(header)) {
+							parameter.setDateTimeInitReprocessing(LocalDateTime.now());
+							parameter.setState(null);
+							parameter.setResult(null);
 						}
-						service.getClass().getMethod("call", new Class[] { WebDriver.class, Header.class })
-								.invoke(service, webDriver, header);
-						log.info("concluiu método call.");
+						serviceObject.getClass().getMethod("call", new Class[] { WebDriver.class, Header.class })
+								.invoke(serviceObject, webDriver, header);
+						log.info("done call");
 						try {
 							log.info(" destroy webdriver ");
 							webDriver.quit();
 						} catch (Exception e) {
 							log.info(" destroy webdriver problem ");
 						}
-						log.info(" seta dataHoraFimReprocessamento: " + LocalDateTime.now());
-						for (Parameter parametro : Utils.getParameters(header)) {
-							parametro.setDateTimeEndReprocessing(LocalDateTime.now());
+						for (Parameter parameter : Utils.getParameters(header)) {
+							parameter.setDateTimeEndReprocessing(LocalDateTime.now());
 						}
-						log.info("parametros salvo: " + Utils.getParameters(header).size());
+						log.info("parameters size: " + Utils.getParameters(header).size());
 						headerService.saveHeader(header);
-						log.info("salvo com sucesso.");
+						log.info("sucessufuly");
 						break;
 					}
 				}
 			}
 		} catch (Exception e) {
-			log.severe("problema call header");
+			log.severe("problem call header");
 			e.printStackTrace();
 			throw new RobotException(PROBLEMA_DESENVOLVIMENTO);
 		}
 	}
 
 	private final void validations(final HeaderVO headerVO) throws RequiredFieldException {
-		log.info("realizando a validação do header ");
+		log.info("init validations header ");
 		if (!Utils.isValidString(headerVO.getCpf())) {
 			throw new RequiredFieldException(CPF_CNPJ_INVALIDO);
 		}
@@ -189,27 +186,13 @@ public class RobotApiService {
 		if (parametros == null || parametros.isEmpty()) {
 			throw new RequiredFieldException(PARAMETRO_INVALIDO);
 		}
-		log.info("validações do header ok");
+		log.info("end validations header");
 	}
 
 	private void validateUser(final Header header, final HeaderVO headerVO) throws InvalidPersonException {
-		log.info("validar usuario");
-		final Person usuario = new Person();
-		usuario.setCpf(headerVO.getCpf());
-		usuarioService.loadPerson(usuario);
-		boolean executou = false;
-		for (Service site : usuario.getServices()) {
-			if (site.getName().equals(headerVO.getService())) {
-				header.setPerson(usuario);
-				header.setService(site);
-				log.info("usuario validado ok: " + site.getName());
-				executou = true;
-				break;
-			}
-		}
-		if (!executou) {
-			log.info("usuário inválido ");
-			throw new InvalidPersonException(USUARIO_INVALIDO);
-		}
+		log.info("load person ");
+		final Person person = new Person();
+		person.setCpf(headerVO.getCpf());
+		usuarioService.loadPerson(person);
 	}
 }

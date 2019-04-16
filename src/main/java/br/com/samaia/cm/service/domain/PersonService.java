@@ -42,8 +42,6 @@ public class PersonService {
 	public void loadPerson(Person person) throws InvalidPersonException {
 		List<Person> persons = repository.findByCpf(person);
 		if (!persons.isEmpty()) {
-			log.info(String.valueOf(persons.get(0).getServices().size()));
-			person.setServices(persons.get(0).getServices());
 			person.setName(persons.get(0).getName());
 		} else {
 			log.severe("invalid person ");

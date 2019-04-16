@@ -1,12 +1,9 @@
 package br.com.samaia.cm.domain.entity;
 
-import java.util.List;
-
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToMany;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 
@@ -33,9 +30,6 @@ public class Person implements AbstractEntity<Integer> {
 
 	private String name;
 
-	@ManyToMany
-	private List<Service> services;
-
 	@Override
 	public Integer getId() {
 		return id;
@@ -60,13 +54,5 @@ public class Person implements AbstractEntity<Integer> {
 
 	public String getCpf() {
 		return cpf;
-	}
-
-	public void setServices(List<Service> services) {
-		this.services = services;
-	}
-
-	public List<Service> getServices() {
-		return services;
 	}
 }

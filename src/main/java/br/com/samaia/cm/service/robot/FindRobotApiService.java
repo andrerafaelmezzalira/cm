@@ -10,7 +10,6 @@ import javax.inject.Inject;
 import br.com.samaia.cm.arq.producer.Property;
 import br.com.samaia.cm.domain.entity.Header;
 import br.com.samaia.cm.domain.entity.Person;
-import br.com.samaia.cm.domain.entity.Service;
 import br.com.samaia.cm.exception.InvalidPersonException;
 import br.com.samaia.cm.exception.RequiredFieldException;
 import br.com.samaia.cm.service.domain.HeaderService;
@@ -79,7 +78,7 @@ public class FindRobotApiService {
 
 	private final void validations(final FindHeaderVO consultaHeaderVO)
 			throws RequiredFieldException, InvalidPersonException {
-		log.info("realizando a validação do header ");
+		log.info("init validatinos header ");
 		if (!Utils.isValidString(consultaHeaderVO.getCpf())) {
 			throw new RequiredFieldException(CPF_CNPJ_INVALIDO);
 		}
@@ -89,23 +88,9 @@ public class FindRobotApiService {
 		if (consultaHeaderVO.getDateTime() == null) {
 			throw new RequiredFieldException(DATA_HORA_INVALIDO);
 		}
-		log.info("validar usuario");
 		Person person = new Person();
 		person.setCpf(consultaHeaderVO.getCpf());
 		usuarioService.loadPerson(person);
-		boolean executou = false;
-		for (Service site : person.getServices()) {
-			if (site.getName().equals(consultaHeaderVO.getService())) {
-				log.info("usuario validado ok: " + site.getName());
-				executou = true;
-				break;
-			}
-		}
-		if (!executou) {
-			log.info("usuário inválido ");
-			throw new InvalidPersonException(USUARIO_INVALIDO);
-		}
-
-		log.info("validações do header ok");
+		log.info("validations header ok");
 	}
 }
